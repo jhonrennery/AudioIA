@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import tempfile
+import zipfile
 from pathlib import Path
 
 from .config import get_settings
@@ -131,3 +132,28 @@ def process_audio(
         translated_audio_path = synthesize_speech(translated, target_language)
 
     return transcript, rewritten, translated, translated_audio_path
+
+
+def create_download_bundle(
+    transcript: str,
+    rewritten: str,
+    translated: str,
+    translated_audio_path: str | None,
+) -> str | None:
+    if not any([transcript, rewritten, translated, translated_audio_path]):
+        return None
+
+    bundle_dir = Path(tempfile.mkdtemp(prefix="audioia_bundle_"))
+    bundle_path = bundle_dir / "audioia_resultados.zip"
+
+    with zipfile.ZipFile(bundle_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("transcricao.txt", transcript or "")
+        archive.writestr("texto_reescrito.txt", rewritten or "")
+        archive.writestr("traducao.txt", translated or "")
+
+        if translated_audio_path:
+            audio_file = Path(translated_audio_path)
+            if audio_file.exists():
+                archive.write(audio_file, arcname=audio_file.name)
+
+    return str(bundle_path)

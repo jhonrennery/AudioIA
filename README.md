@@ -26,6 +26,28 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Instalar como programa no Linux
+
+Esse projeto agora pode ser instalado como aplicativo local no computador, com atalho de menu e comando proprio.
+
+```bash
+python3 scripts/install_linux.py
+```
+
+Depois da instalacao, voce pode abrir com:
+
+```bash
+~/.local/bin/audioia
+```
+
+Ou pelo menu de aplicativos com o nome `AudioIA`.
+
+Para remover:
+
+```bash
+python3 scripts/uninstall_linux.py
+```
+
 ## Configurar
 
 ```bash
@@ -44,6 +66,8 @@ python main.py
 
 Abra o endereco local mostrado pelo Gradio no navegador.
 
+Fora do Docker, o acesso local padrao e `http://127.0.0.1:7860`.
+
 ## Fluxo do app
 
 1. Envie ou grave um audio.
@@ -55,6 +79,15 @@ Abra o endereco local mostrado pelo Gradio no navegador.
 ## Modo ao vivo
 
 Quando `Modo ao vivo` estiver ativo, o app processa automaticamente cada nova gravacao feita no microfone. Isso acelera o fluxo de uso e deixa a experiencia mais proxima de traducao em tempo real, embora ainda funcione por blocos de audio.
+
+## Download dos resultados
+
+Depois de processar o audio, o app gera um pacote `.zip` com:
+
+- `transcricao.txt`
+- `texto_reescrito.txt`
+- `traducao.txt`
+- audio traduzido, quando estiver disponivel
 
 ## Docker
 
