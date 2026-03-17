@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AudioIA</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-card">
+        <div class="hero-copy">
+          <span class="eyebrow">Groq + Electron</span>
+          <h1>Transcricao rapida com um toque.</h1>
+          <p>
+            Clique no microfone para iniciar a gravacao, clique novamente para encerrar e receba o texto pronto para copiar e colar onde quiser.
+          </p>
+        </div>
+
+        <div class="recorder-panel">
+          <button id="recordButton" class="record-button" type="button" aria-label="Iniciar gravacao">
+            <span class="mic-core"></span>
+          </button>
+          <p id="recordLabel" class="record-label">Pronto para gravar</p>
+          <p id="statusMessage" class="status-message">Carregando configuracao...</p>
+        </div>
+      </section>
+
+      <section class="output-card">
+        <div class="output-header">
+          <div>
+            <span class="eyebrow">Texto final</span>
+            <h2>Transcricao</h2>
+          </div>
+          <button id="copyButton" class="copy-button" type="button" disabled>Copiar texto</button>
+        </div>
+
+        <textarea
+          id="transcriptOutput"
+          class="transcript-output"
+          placeholder="Seu texto transcrito vai aparecer aqui."
+          readonly
+        ></textarea>
+
+        <div class="meta-row">
+          <span id="metaInfo">Nenhuma gravacao enviada.</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="renderer.js"></script>
+  </body>
+  </html>

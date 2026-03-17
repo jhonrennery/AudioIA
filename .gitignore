@@ -4,3 +4,5 @@ __pycache__/
 .env
 .gradio/
 *.log
+node_modules/
+release/

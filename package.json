@@ -1,0 +1,61 @@
+{
+  "name": "audioia-electron",
+  "version": "1.0.0",
+  "author": "OpenCode",
+  "description": "Aplicativo simples de transcricao em tempo real com Groq e Electron.",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis portable",
+    "dist:win:x64": "electron-builder --win nsis portable --x64",
+    "pack": "electron-builder --dir"
+  },
+  "build": {
+    "appId": "br.audioia.transcricao",
+    "productName": "AudioIA Transcricao",
+    "files": [
+      "electron/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "AudioIA-Transcricao-Setup-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "AudioIA-Transcricao-Portable-${arch}.${ext}"
+    }
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "groq-sdk": "^0.15.0"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

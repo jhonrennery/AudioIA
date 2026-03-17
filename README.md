@@ -1,114 +1,76 @@
 # AudioIA
 
-Ferramenta inicial para:
+Aplicativo desktop simples para transcricao de audio com a API da Groq.
 
-- transcrever audio em texto;
-- reescrever a fala com mais clareza;
-- traduzir o resultado para outro idioma;
-- opcionalmente gerar um novo audio traduzido.
-- modo ao vivo para processar automaticamente cada nova gravacao do microfone.
+O fluxo agora foi pensado para o seu caso de uso:
 
-## Como funciona
+- um botao central de microfone;
+- clique uma vez para gravar;
+- clique novamente para parar;
+- o audio e enviado para a Groq;
+- o texto volta pronto para copiar e colar.
 
-O prototipo usa:
+O projeto usa Electron para ja nascer preparado para empacotamento em `.exe` no Windows.
 
-- API da OpenAI para transcricao e reescrita quando `OPENAI_API_KEY` estiver definida;
-- `deep-translator` como fallback para traducao de texto;
-- `gTTS` para gerar o audio traduzido.
+## Stack usada
 
-Sem `OPENAI_API_KEY`, a interface abre normalmente, mas a transcricao nao roda.
+- Electron para interface desktop;
+- captura de audio com `MediaRecorder`;
+- `groq-sdk` para transcricao;
+- `electron-builder` para gerar instalador e versao portatil do Windows.
 
-## Instalar
+## Configuracao
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Instalar como programa no Linux
-
-Esse projeto agora pode ser instalado como aplicativo local no computador, com atalho de menu e comando proprio.
+Crie um arquivo `.env` na raiz com base em `.env.example`:
 
 ```bash
-python3 scripts/install_linux.py
+GROQ_API_KEY=sua-chave-aqui
+GROQ_TRANSCRIPTION_MODEL=whisper-large-v3-turbo
 ```
 
-Depois da instalacao, voce pode abrir com:
+## Rodar em desenvolvimento
 
 ```bash
-~/.local/bin/audioia
+npm install
+npm start
 ```
 
-Ou pelo menu de aplicativos com o nome `AudioIA`.
+## Como usar
 
-Para remover:
+1. Abra o app.
+2. Clique no microfone para iniciar a gravacao.
+3. Clique de novo para encerrar.
+4. Aguarde a transcricao.
+5. Use o botao `Copiar texto`.
+
+## Gerar `.exe` para Windows
+
+O projeto ja esta configurado para gerar:
+
+- instalador `NSIS`;
+- versao portatil;
+- arquitetura `x64`;
+- arquitetura `ia32`.
+- icone proprio em `assets/icon.ico`.
+
+Comando:
 
 ```bash
-python3 scripts/uninstall_linux.py
+npm run dist:win
 ```
 
-## Configurar
+Os arquivos saem em `release/`.
 
-```bash
-export OPENAI_API_KEY="sua-chave"
-export OPENAI_MODEL="gpt-4.1-mini"
-export OPENAI_AUDIO_MODEL="whisper-1"
-```
+## Observacao importante sobre build Windows
 
-Ou copie os valores de `.env.example` para seu gerenciador de ambiente favorito.
+Se voce gerar o `.exe` a partir do Linux, normalmente vai precisar de dependencias extras de cross-build, como `wine`.
+O caminho mais estavel e rodar `npm install` e `npm run dist:win` em uma maquina Windows para produzir os executaveis finais.
 
-## Executar
+## Estrutura principal
 
-```bash
-python main.py
-```
-
-Abra o endereco local mostrado pelo Gradio no navegador.
-
-Fora do Docker, o acesso local padrao e `http://127.0.0.1:7860`.
-
-## Fluxo do app
-
-1. Envie ou grave um audio.
-2. Escolha o idioma de origem.
-3. Escolha como a fala sera reescrita.
-4. Escolha o idioma de destino.
-5. Gere o texto traduzido e, se quiser, um novo audio.
-
-## Modo ao vivo
-
-Quando `Modo ao vivo` estiver ativo, o app processa automaticamente cada nova gravacao feita no microfone. Isso acelera o fluxo de uso e deixa a experiencia mais proxima de traducao em tempo real, embora ainda funcione por blocos de audio.
-
-## Download dos resultados
-
-Depois de processar o audio, o app gera um pacote `.zip` com:
-
-- `transcricao.txt`
-- `texto_reescrito.txt`
-- `traducao.txt`
-- audio traduzido, quando estiver disponivel
-
-## Docker
-
-Build da imagem:
-
-```bash
-docker build -t audioia .
-docker run --rm -p 7860:7860 -e OPENAI_API_KEY="$OPENAI_API_KEY" audioia
-```
-
-Ou com Compose:
-
-```bash
-docker compose up --build
-```
-
-Depois abra `http://127.0.0.1:7860`.
-
-## Proximos passos recomendados
-
-- salvar historico de sessoes;
-- adicionar selecao de voz para TTS;
-- suportar traducao em tempo real;
-- trocar `gTTS` por um TTS com vozes mais naturais.
+- `electron/main.js`: processo principal, integracao com Groq e clipboard;
+- `electron/preload.js`: ponte segura entre Electron e interface;
+- `electron/renderer/index.html`: tela principal;
+- `electron/renderer/renderer.js`: gravacao, envio e copia do texto;
+- `electron/renderer/styles.css`: visual da interface;
+- `assets/icon.ico`: icone do app e do instalador Windows.
