@@ -5,6 +5,7 @@ Aplicativo desktop simples para transcricao de audio com a API da Groq.
 O fluxo agora foi pensado para o seu caso de uso:
 
 - um botao central de microfone;
+- seletor de idioma da fala;
 - clique uma vez para gravar;
 - clique novamente para parar;
 - o audio e enviado para a Groq;
@@ -38,10 +39,11 @@ npm start
 ## Como usar
 
 1. Abra o app.
-2. Clique no microfone para iniciar a gravacao.
-3. Clique de novo para encerrar.
-4. Aguarde a transcricao.
-5. Use o botao `Copiar texto`.
+2. Escolha o idioma da fala ou deixe em auto.
+3. Clique no microfone para iniciar a gravacao.
+4. Clique de novo para encerrar.
+5. Aguarde a transcricao.
+6. Use o botao `Copiar texto`.
 
 ## Gerar `.exe` para Windows
 

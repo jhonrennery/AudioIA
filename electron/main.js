@@ -78,6 +78,7 @@ ipcMain.handle('app:copy-text', async (_event, text) => {
 
 ipcMain.handle('app:transcribe-audio', async (_event, payload) => {
   const audioBuffer = payload?.audioBuffer;
+  const selectedLanguage = payload?.language;
 
   if (!audioBuffer) {
     throw new Error('Nenhum audio foi recebido para transcricao.');
@@ -91,7 +92,7 @@ ipcMain.handle('app:transcribe-audio', async (_event, payload) => {
       file: fs.createReadStream(tempAudioPath),
       model: DEFAULT_MODEL,
       response_format: 'verbose_json',
-      language: 'pt',
+      language: selectedLanguage && selectedLanguage !== 'auto' ? selectedLanguage : undefined,
       temperature: 0,
     });
 

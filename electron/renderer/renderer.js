@@ -4,6 +4,17 @@ const statusMessage = document.getElementById('statusMessage');
 const transcriptOutput = document.getElementById('transcriptOutput');
 const copyButton = document.getElementById('copyButton');
 const metaInfo = document.getElementById('metaInfo');
+const languageSelect = document.getElementById('languageSelect');
+
+const LANGUAGE_LABELS = {
+  auto: 'Auto detectar',
+  pt: 'Portugues',
+  en: 'Ingles',
+  es: 'Espanhol',
+  fr: 'Frances',
+  de: 'Alemao',
+  it: 'Italiano',
+};
 
 let mediaRecorder = null;
 let stream = null;
@@ -33,7 +44,7 @@ async function loadConfig() {
   const config = await window.audioIA.getConfig();
 
   if (config.hasApiKey) {
-    setStatus(`API pronta. Modelo de transcricao: ${config.model}.`);
+    setStatus(`API pronta. Modelo de transcricao: ${config.model}. Escolha o idioma e grave.`);
   } else {
     setStatus('Defina GROQ_API_KEY no arquivo .env para habilitar a transcricao.');
   }
@@ -53,13 +64,13 @@ async function startRecording() {
   mediaRecorder.addEventListener('stop', async () => {
     const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
     const arrayBuffer = await audioBlob.arrayBuffer();
-    await sendForTranscription(arrayBuffer);
+    await sendForTranscription(arrayBuffer, languageSelect.value);
   });
 
   mediaRecorder.start();
   transcriptOutput.value = '';
   copyButton.disabled = true;
-  metaInfo.textContent = 'Gravacao em andamento...';
+  metaInfo.textContent = `Gravacao em andamento em ${LANGUAGE_LABELS[languageSelect.value] || 'idioma selecionado'}...`;
   setRecordingState(true);
   setStatus('Captando audio do microfone. Clique novamente para encerrar.');
 }
@@ -80,12 +91,12 @@ function stopRecording() {
   metaInfo.textContent = 'Processando...';
 }
 
-async function sendForTranscription(arrayBuffer) {
+async function sendForTranscription(arrayBuffer, language) {
   try {
-    const result = await window.audioIA.transcribeAudio(arrayBuffer);
+    const result = await window.audioIA.transcribeAudio(arrayBuffer, language);
     transcriptOutput.value = result.text || '';
     copyButton.disabled = !result.text;
-    metaInfo.textContent = `Idioma: ${result.language || 'pt'} | Duracao: ${formatDuration(result.duration)}`;
+    metaInfo.textContent = `Idioma: ${LANGUAGE_LABELS[result.language] || result.language || 'Auto detectar'} | Duracao: ${formatDuration(result.duration)}`;
     setStatus(result.text ? 'Transcricao concluida. Voce ja pode copiar o texto.' : 'Nenhum texto foi identificado no audio.');
   } catch (error) {
     transcriptOutput.value = '';
@@ -94,6 +105,12 @@ async function sendForTranscription(arrayBuffer) {
     setStatus(error.message || 'Nao foi possivel transcrever o audio.');
   }
 }
+
+languageSelect.addEventListener('change', () => {
+  if (!isRecording) {
+    setStatus(`Idioma selecionado: ${LANGUAGE_LABELS[languageSelect.value] || languageSelect.value}.`);
+  }
+});
 
 recordButton.addEventListener('click', async () => {
   try {

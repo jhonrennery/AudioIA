@@ -18,6 +18,18 @@
         </div>
 
         <div class="recorder-panel">
+          <label class="language-field" for="languageSelect">
+            <span>Idioma da fala</span>
+            <select id="languageSelect" class="language-select">
+              <option value="auto">Auto detectar</option>
+              <option value="pt" selected>Portugues</option>
+              <option value="en">Ingles</option>
+              <option value="es">Espanhol</option>
+              <option value="fr">Frances</option>
+              <option value="de">Alemao</option>
+              <option value="it">Italiano</option>
+            </select>
+          </label>
           <button id="recordButton" class="record-button" type="button" aria-label="Iniciar gravacao">
             <span class="mic-core"></span>
           </button>
