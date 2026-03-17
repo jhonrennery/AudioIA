@@ -1,0 +1,12 @@
+services:
+  audioia:
+    build: .
+    container_name: audioia
+    ports:
+      - "7860:7860"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_AUDIO_MODEL: ${OPENAI_AUDIO_MODEL:-whisper-1}
+      HOST: 0.0.0.0
+      PORT: 7860
